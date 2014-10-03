@@ -9,11 +9,13 @@ static AppTimer *timer;
 static bool waitForTimer = false;
 static int result;
 static int lastResult = -1;
-const int delta = 200;
+const int deltaShort = 200;
+const int deltaLong = 800;
 
 void timer_callback(void *data) {
 
     waitForTimer = true;
+    //app_timer_cancel(timer);
 
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
@@ -24,11 +26,13 @@ void timer_callback(void *data) {
     if (lastResult != result) {
         //Register next execution
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d select %d right %d = %d", left, select, right, result);
-        timer = app_timer_register(delta, (AppTimerCallback) timer_callback, NULL);
+        timer = app_timer_register(deltaShort, (AppTimerCallback) timer_callback, NULL);
         lastResult = result;
     } else {
         waitForTimer = false;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Stop sending");
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d select %d right %d = %d", left, select, right, result);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Slow send");
+        timer = app_timer_register(deltaLong, (AppTimerCallback) timer_callback, NULL);
     }
 }
 

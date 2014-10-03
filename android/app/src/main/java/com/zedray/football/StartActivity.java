@@ -89,18 +89,15 @@ public class StartActivity extends Activity implements View.OnTouchListener {
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
         switch (motionEvent.getAction()) {
-            case 0:
+            case 0: // Button pressed.
                 switch (view.getId()) {
                     case R.id.a_left:
-                        Log.w(TAG, "StartActivity.onTouch() Left DOWN");
                         mALeft.setBackgroundResource(R.color.red);
                         break;
                     case R.id.a_select:
-                        Log.w(TAG, "StartActivity.onTouch() Select DOWN");
                         mASelect.setBackgroundResource(R.color.red);
                         break;
                     case R.id.a_right:
-                        Log.w(TAG, "StartActivity.onTouch() Right DOWN");
                         mARight.setBackgroundResource(R.color.red);
                         break;
                     default:
@@ -108,18 +105,15 @@ public class StartActivity extends Activity implements View.OnTouchListener {
                 }
                 break;
 
-            case 1:
+            case 1: // Button released.
                 switch (view.getId()) {
                     case R.id.a_left:
-                        Log.w(TAG, "StartActivity.onTouch() Left UP");
                         mALeft.setBackgroundResource(R.color.green);
                         break;
                     case R.id.a_select:
-                        Log.w(TAG, "StartActivity.onTouch() Select UP");
                         mASelect.setBackgroundResource(R.color.green);
                         break;
                     case R.id.a_right:
-                        Log.w(TAG, "StartActivity.onTouch() Right UP");
                         mARight.setBackgroundResource(R.color.green);
                         break;
                     default:
@@ -132,24 +126,18 @@ public class StartActivity extends Activity implements View.OnTouchListener {
 
     private void updateUi() {
         if ((mState & 1) != 0) {
-            Log.w(TAG, "StartActivity.updateUi() 0 selected");
             mBLeft.setBackgroundResource(R.color.blue);
         } else {
-            Log.w(TAG, "StartActivity.updateUi() 0 not selected");
             mBLeft.setBackgroundResource(R.color.green);
         }
         if ((mState & 2) != 0) {
-            Log.w(TAG, "StartActivity.updateUi() 2 selected");
             mBSelect.setBackgroundResource(R.color.blue);
         } else {
-            Log.w(TAG, "StartActivity.updateUi() 2 not selected");
             mBSelect.setBackgroundResource(R.color.green);
         }
         if ((mState & 4) != 0) {
-            Log.w(TAG, "StartActivity.updateUi() 4 selected");
             mBRight.setBackgroundResource(R.color.blue);
         } else {
-            Log.w(TAG, "StartActivity.updateUi() 4 not selected");
             mBRight.setBackgroundResource(R.color.green);
         }
     }
