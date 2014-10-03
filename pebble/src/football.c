@@ -2,23 +2,61 @@
 
 static Window *window;
 static TextLayer *text_layer;
+static int select = 0;
+static int up = 0;
+static int down = 0;
 
-static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Select");
+static void updateUi() {
+    int result = 0;
+    if (select == 1) {
+        result += 1;
+    }
+    if (up == 1) {
+        result += 2;
+    }
+    if (down == 1) {
+        result += 4;
+    }
+    static char result_text[] = "x";
+    snprintf(result_text, sizeof(result_text), "%d", result);
+    text_layer_set_text(text_layer, result_text);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Button select %d up %d down %d", select, up, down);
 }
 
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Up");
+static void select_press_click_handler(ClickRecognizerRef recognizer, void *context) {
+    select = 1;
+    updateUi();
 }
 
-static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Down");
+static void select_release_click_handler(ClickRecognizerRef recognizer, void *context) {
+    select = 0;
+    updateUi();
+}
+
+static void up_press_click_handler(ClickRecognizerRef recognizer, void *context) {
+    up = 1;
+    updateUi();
+}
+
+static void up_release_click_handler(ClickRecognizerRef recognizer, void *context) {
+    up = 0;
+    updateUi();
+}
+
+static void down_press_click_handler(ClickRecognizerRef recognizer, void *context) {
+    down = 1;
+    updateUi();
+}
+
+static void down_release_click_handler(ClickRecognizerRef recognizer, void *context) {
+    down = 0;
+    updateUi();
 }
 
 static void click_config_provider(void *context) {
-  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
+    window_raw_click_subscribe(BUTTON_ID_SELECT, select_press_click_handler, select_release_click_handler, context);
+    window_raw_click_subscribe(BUTTON_ID_UP, up_press_click_handler, up_release_click_handler, context);
+    window_raw_click_subscribe(BUTTON_ID_DOWN, down_press_click_handler, down_release_click_handler, context);
 }
 
 static void window_load(Window *window) {
@@ -42,8 +80,7 @@ static void init(void) {
     .load = window_load,
     .unload = window_unload,
   });
-  const bool animated = true;
-  window_stack_push(window, animated);
+  window_stack_push(window, true);
 }
 
 static void deinit(void) {
@@ -52,9 +89,6 @@ static void deinit(void) {
 
 int main(void) {
   init();
-
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Done initializing, pushed window: %p", window);
-
   app_event_loop();
   deinit();
 }

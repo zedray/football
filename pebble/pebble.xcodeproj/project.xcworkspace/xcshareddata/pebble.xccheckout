@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>05401C93-EF90-4725-8CA8-79D7D362F90C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>pebble</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>EB45D26FDF86EBFBC3918D103DCCFAC5695B6917</key>
+		<string>github.com:zedray/football.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>pebble/pebble.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>EB45D26FDF86EBFBC3918D103DCCFAC5695B6917</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:zedray/football.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>EB45D26FDF86EBFBC3918D103DCCFAC5695B6917</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>EB45D26FDF86EBFBC3918D103DCCFAC5695B6917</string>
+			<key>IDESourceControlWCCName</key>
+			<string>football</string>
+		</dict>
+	</array>
+</dict>
+</plist>
