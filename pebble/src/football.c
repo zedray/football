@@ -1,7 +1,7 @@
 #include <pebble.h>
 
-const int deltaShort = 200;
-const int deltaLong = 800;
+const int timerShort = 10;
+const int timerLong = 50;
 
 static Window *window;
 static TextLayer *text_layer;
@@ -14,11 +14,8 @@ static int right = 0;
 static int message;
 static int lastMessage = -1;
 
-static bool waitForTimer = false;
-
-void timer_callback(void *data) {
-
-    waitForTimer = true;
+static void timer_callback(void *data) {
+    timer = NULL;
 
     // Send the message
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d", left, middle, right, message);
@@ -28,14 +25,16 @@ void timer_callback(void *data) {
     dict_write_tuplet(iter, &value);
     app_message_outbox_send();
 
+    //Register next execution (if stuff has changed)
     if (lastMessage != message) {
-        //Register next execution
-        timer = app_timer_register(deltaShort, (AppTimerCallback) timer_callback, NULL);
+        timer = app_timer_register(timerLong, (AppTimerCallback) timer_callback, NULL);
         lastMessage = message;
-    } else {
-        waitForTimer = false;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Slow send");
-        timer = app_timer_register(deltaLong, (AppTimerCallback) timer_callback, NULL);
+    }
+}
+
+static void regiserTimer() {
+    if (timer == NULL) {
+        timer = app_timer_register(timerShort, (AppTimerCallback) timer_callback, NULL);
     }
 }
 
@@ -56,9 +55,7 @@ static void updateUi() {
     snprintf(result_text, sizeof(result_text), "%d", message);
     text_layer_set_text(text_layer, result_text);
 
-    if (waitForTimer == false) {
-        timer_callback(NULL);
-    }
+    regiserTimer();
 }
 
 static void left_press_click_handler(ClickRecognizerRef recognizer, void *context) {
