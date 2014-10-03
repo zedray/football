@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
@@ -28,6 +29,7 @@ public class StartActivity extends Activity implements View.OnTouchListener {
     }
 
     private Button mALeft, mASelect, mARight, mBLeft, mBSelect, mBRight;
+    private LinearLayout mBackdrop;
     private int mState = 4;
 
     private final Handler handler = new Handler() {
@@ -50,18 +52,25 @@ public class StartActivity extends Activity implements View.OnTouchListener {
         mBLeft = (Button) findViewById(R.id.b_left);
         mBSelect = (Button) findViewById(R.id.b_select);
         mBRight = (Button) findViewById(R.id.b_right);
-
+        mBackdrop = (LinearLayout) findViewById(R.id.backdrop);
+        if (PebbleKit.isWatchConnected(this)) {
+            mBackdrop.setBackgroundResource(R.color.green);
+        } else {
+            mBackdrop.setBackgroundResource(R.color.red);
+        };
         // Listen for Pebble connections.
         PebbleKit.registerPebbleConnectedReceiver(getApplicationContext(), new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.w(TAG, "PebbleConnectedReceiver.onReceive() Pebble connected!");
+                mBackdrop.setBackgroundResource(R.color.green);
             }
         });
         PebbleKit.registerPebbleDisconnectedReceiver(getApplicationContext(), new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.w(TAG, "PebbleConnectedReceiver.onReceive() Pebble disconnected!");
+                mBackdrop.setBackgroundResource(R.color.red);
             }
         });
 

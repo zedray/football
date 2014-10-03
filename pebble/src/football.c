@@ -1,58 +1,61 @@
 #include <pebble.h>
 
-static Window *window;
-static TextLayer *text_layer;
-static int left = 0;
-static int select = 0;
-static int right = 0;
-static AppTimer *timer;
-static bool waitForTimer = false;
-static int result;
-static int lastResult = -1;
 const int deltaShort = 200;
 const int deltaLong = 800;
+
+static Window *window;
+static TextLayer *text_layer;
+static AppTimer *timer;
+
+static int left = 0;
+static int middle = 0;
+static int right = 0;
+
+static int message;
+static int lastMessage = -1;
+
+static bool waitForTimer = false;
 
 void timer_callback(void *data) {
 
     waitForTimer = true;
-    //app_timer_cancel(timer);
 
+    // Send the message
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d", left, middle, right, message);
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
-    Tuplet value = TupletInteger(0, result);
+    Tuplet value = TupletInteger(0, message);
     dict_write_tuplet(iter, &value);
     app_message_outbox_send();
 
-    if (lastResult != result) {
+    if (lastMessage != message) {
         //Register next execution
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d select %d right %d = %d", left, select, right, result);
         timer = app_timer_register(deltaShort, (AppTimerCallback) timer_callback, NULL);
-        lastResult = result;
+        lastMessage = message;
     } else {
         waitForTimer = false;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d select %d right %d = %d", left, select, right, result);
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Slow send");
         timer = app_timer_register(deltaLong, (AppTimerCallback) timer_callback, NULL);
     }
 }
 
 static void updateUi() {
-    result = 0;
+    message = 0;
     if (left == 1) {
-        result += 1;
+        message += 1;
     }
-    if (select == 1) {
-        result += 2;
+    if (middle == 1) {
+        message += 2;
     }
     if (right == 1) {
-        result += 4;
+        message += 4;
     }
-    
+
     // Actually update the UI.
-    //static char result_text[] = "x";
-    //snprintf(result_text, sizeof(result_text), "%d", result);
-    //text_layer_set_text(text_layer, result_text);
-    
+    static char result_text[] = "x";
+    snprintf(result_text, sizeof(result_text), "%d", message);
+    text_layer_set_text(text_layer, result_text);
+
     if (waitForTimer == false) {
         timer_callback(NULL);
     }
@@ -68,13 +71,13 @@ static void left_release_click_handler(ClickRecognizerRef recognizer, void *cont
     updateUi();
 }
 
-static void select_press_click_handler(ClickRecognizerRef recognizer, void *context) {
-    select = 1;
+static void middle_press_click_handler(ClickRecognizerRef recognizer, void *context) {
+    middle = 1;
     updateUi();
 }
 
-static void select_release_click_handler(ClickRecognizerRef recognizer, void *context) {
-    select = 0;
+static void middle_release_click_handler(ClickRecognizerRef recognizer, void *context) {
+    middle = 0;
     updateUi();
 }
 
@@ -89,8 +92,8 @@ static void right_release_click_handler(ClickRecognizerRef recognizer, void *con
 }
 
 static void click_config_provider(void *context) {
-    window_raw_click_subscribe(BUTTON_ID_SELECT, select_press_click_handler, select_release_click_handler, context);
     window_raw_click_subscribe(BUTTON_ID_UP, left_press_click_handler, left_release_click_handler, context);
+    window_raw_click_subscribe(BUTTON_ID_SELECT, middle_press_click_handler, middle_release_click_handler, context);
     window_raw_click_subscribe(BUTTON_ID_DOWN, right_press_click_handler, right_release_click_handler, context);
 }
 
