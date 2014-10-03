@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Football</string>
+    <string name="left">Left</string>
+    <string name="select">Select</string>
+    <string name="right">Right</string>
+</resources>

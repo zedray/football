@@ -20,7 +20,7 @@ static void updateUi() {
     static char result_text[] = "x";
     snprintf(result_text, sizeof(result_text), "%d", result);
     text_layer_set_text(text_layer, result_text);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Button select %d up %d down %d", select, up, down);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Button select %d up %d down %d for %d", select, up, down, result);
 }
 
 static void select_press_click_handler(ClickRecognizerRef recognizer, void *context) {
