@@ -1,0 +1,17 @@
+{
+  "uuid": "7738b4bb-82a0-40f0-a0e1-a71c2017a98f",
+  "shortName": "football",
+  "longName": "football",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 1,
+  "versionLabel": "1.0.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
