@@ -80,7 +80,8 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 20 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="app_pebble" />
+    <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
+    <orderEntry type="module" module-name="app_pebble" exported="" />
   </component>
 </module>
 
