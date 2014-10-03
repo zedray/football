@@ -26,6 +26,7 @@ public class StartActivity extends Activity implements View.OnTouchListener {
 
     private enum KEYS {
         STATE,
+        COUNTER,
     }
 
     private Button mALeft, mASelect, mARight, mBLeft, mBSelect, mBRight;
@@ -79,7 +80,8 @@ public class StartActivity extends Activity implements View.OnTouchListener {
             @Override
             public void receiveData(final Context context, final int transactionId, final PebbleDictionary data) {
                 mState = data.getInteger(KEYS.STATE.ordinal()).intValue();
-                Log.w(TAG, "Received value " + mState);
+                int counter = data.getInteger(KEYS.COUNTER.ordinal()).intValue();
+                Log.w(TAG, "Received value " + mState + "  (" + counter + ")");
                 PebbleKit.sendAckToPebble(context, transactionId);
 
                 handler.post(new Runnable() {

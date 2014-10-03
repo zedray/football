@@ -13,17 +13,22 @@ static int right = 0;
 
 static int message;
 static int lastMessage = -1;
+static int counter = 0;
 
 static void timer_callback(void *data) {
     timer = NULL;
 
     // Send the message
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d", left, middle, right, message);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d (%d)", left, middle, right, message, counter);
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
-    Tuplet value = TupletInteger(0, message);
-    dict_write_tuplet(iter, &value);
+    Tuplet value1 = TupletInteger(0, message);
+    dict_write_tuplet(iter, &value1);
+    Tuplet value2 = TupletInteger(1, counter);
+    dict_write_tuplet(iter, &value2);
+
     app_message_outbox_send();
+    counter += 1;
 
     //Register next execution (if stuff has changed)
     if (lastMessage != message) {
