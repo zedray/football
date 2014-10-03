@@ -131,7 +131,7 @@ public class StartActivity extends Activity implements View.OnTouchListener {
     }
 
     private void updateUi() {
-        if ((mState & 0) != 0) {
+        if ((mState & 1) != 0) {
             Log.w(TAG, "StartActivity.updateUi() 0 selected");
             mBLeft.setBackgroundResource(R.color.blue);
         } else {

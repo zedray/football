@@ -2,31 +2,66 @@
 
 static Window *window;
 static TextLayer *text_layer;
+static int left = 0;
 static int select = 0;
-static int up = 0;
-static int down = 0;
+static int right = 0;
+static AppTimer *timer;
+static bool waitForTimer = false;
+static int result;
+static int lastResult = -1;
+const int delta = 200;
 
-static void updateUi() {
-    int result = 0;
-    if (select == 1) {
-        result += 1;
-    }
-    if (up == 1) {
-        result += 2;
-    }
-    if (down == 1) {
-        result += 4;
-    }
-    static char result_text[] = "x";
-    snprintf(result_text, sizeof(result_text), "%d", result);
-    text_layer_set_text(text_layer, result_text);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Button select %d up %d down %d for %d", select, up, down, result);
-    
+void timer_callback(void *data) {
+
+    waitForTimer = true;
+
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     Tuplet value = TupletInteger(0, result);
     dict_write_tuplet(iter, &value);
     app_message_outbox_send();
+
+    if (lastResult != result) {
+        //Register next execution
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d select %d right %d = %d", left, select, right, result);
+        timer = app_timer_register(delta, (AppTimerCallback) timer_callback, NULL);
+        lastResult = result;
+    } else {
+        waitForTimer = false;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Stop sending");
+    }
+}
+
+static void updateUi() {
+    result = 0;
+    if (left == 1) {
+        result += 1;
+    }
+    if (select == 1) {
+        result += 2;
+    }
+    if (right == 1) {
+        result += 4;
+    }
+    
+    // Actually update the UI.
+    //static char result_text[] = "x";
+    //snprintf(result_text, sizeof(result_text), "%d", result);
+    //text_layer_set_text(text_layer, result_text);
+    
+    if (waitForTimer == false) {
+        timer_callback(NULL);
+    }
+}
+
+static void left_press_click_handler(ClickRecognizerRef recognizer, void *context) {
+    left = 1;
+    updateUi();
+}
+
+static void left_release_click_handler(ClickRecognizerRef recognizer, void *context) {
+    left = 0;
+    updateUi();
 }
 
 static void select_press_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -39,30 +74,20 @@ static void select_release_click_handler(ClickRecognizerRef recognizer, void *co
     updateUi();
 }
 
-static void up_press_click_handler(ClickRecognizerRef recognizer, void *context) {
-    up = 1;
+static void right_press_click_handler(ClickRecognizerRef recognizer, void *context) {
+    right = 1;
     updateUi();
 }
 
-static void up_release_click_handler(ClickRecognizerRef recognizer, void *context) {
-    up = 0;
-    updateUi();
-}
-
-static void down_press_click_handler(ClickRecognizerRef recognizer, void *context) {
-    down = 1;
-    updateUi();
-}
-
-static void down_release_click_handler(ClickRecognizerRef recognizer, void *context) {
-    down = 0;
+static void right_release_click_handler(ClickRecognizerRef recognizer, void *context) {
+    right = 0;
     updateUi();
 }
 
 static void click_config_provider(void *context) {
     window_raw_click_subscribe(BUTTON_ID_SELECT, select_press_click_handler, select_release_click_handler, context);
-    window_raw_click_subscribe(BUTTON_ID_UP, up_press_click_handler, up_release_click_handler, context);
-    window_raw_click_subscribe(BUTTON_ID_DOWN, down_press_click_handler, down_release_click_handler, context);
+    window_raw_click_subscribe(BUTTON_ID_UP, left_press_click_handler, left_release_click_handler, context);
+    window_raw_click_subscribe(BUTTON_ID_DOWN, right_press_click_handler, right_release_click_handler, context);
 }
 
 static void window_load(Window *window) {
