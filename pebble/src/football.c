@@ -21,7 +21,7 @@ static void timer_callback(void *data) {
 
     if (lastMessage != message) {
         // Send the message
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d (%d)", left, middle, right, message, counter);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d (%d)", left, middle, right, message, counter);
         DictionaryIterator *iter;
         app_message_outbox_begin(&iter);
         Tuplet value1 = TupletInteger(0, message);
@@ -39,11 +39,9 @@ static void timer_callback(void *data) {
 
 static void regiserTimer() {
     if (blockSend == false) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "regiserTimer Not blocked");
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "regiserTimer");
         blockSend = true;
         timer = app_timer_register(timerShort, (AppTimerCallback) timer_callback, NULL);
-    } else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "regiserTimer Blocked");
     }
 }
 
@@ -119,14 +117,14 @@ static void window_unload(Window *window) {
 
 void out_sent_handler(DictionaryIterator *sent, void *context) {
     // Outgoing message was delivered.
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "out_sent_handler");
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "out_sent_handler");
     blockSend = false;
     regiserTimer();
 }
 
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
     // Outgoing message failed.
-    APP_LOG(APP_LOG_LEVEL_WARNING, "out_failed_handler %d", reason);
+    //APP_LOG(APP_LOG_LEVEL_WARNING, "out_failed_handler %d", reason);
     blockSend = false;
     lastMessage = -1;
     timer_callback(NULL);
@@ -134,12 +132,12 @@ void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, voi
 
 void in_received_handler(DictionaryIterator *received, void *context) {
     // incoming message received
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "in_received_handler");
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "in_received_handler");
 }
 
 void in_dropped_handler(AppMessageResult reason, void *context) {
     // incoming message dropped
-    APP_LOG(APP_LOG_LEVEL_WARNING, "in_dropped_handler %d", reason);
+    //APP_LOG(APP_LOG_LEVEL_WARNING, "in_dropped_handler %d", reason);
     regiserTimer();
 }
 
