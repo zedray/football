@@ -65,12 +65,12 @@ public class StartActivity extends Activity implements View.OnTouchListener {
             }
         });
 
-
         // Handle incoming data.
         PebbleKit.registerReceivedDataHandler(this, new PebbleKit.PebbleDataReceiver(PEBBLE_APP_UUID) {
             @Override
             public void receiveData(final Context context, final int transactionId, final PebbleDictionary data) {
-                mState = data.getUnsignedInteger(KEYS.STATE.ordinal()).intValue();
+                mState = data.getInteger(KEYS.STATE.ordinal()).intValue();
+                Log.w(TAG, "Received value " + mState);
                 PebbleKit.sendAckToPebble(context, transactionId);
 
                 handler.post(new Runnable() {

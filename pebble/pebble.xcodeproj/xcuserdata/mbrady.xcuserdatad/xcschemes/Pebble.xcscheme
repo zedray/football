@@ -54,7 +54,7 @@
       </MacroExpansion>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "debug --pebble_sdk=/Users/mbrady/pebble-dev/PebbleSDK-current --phone 10.0.0.237"
+            argument = "debug --pebble_sdk=/Users/mbrady/pebble-dev/PebbleSDK-current --phone  172.20.1.108"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
