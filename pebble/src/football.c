@@ -15,31 +15,35 @@ static int message;
 static int lastMessage = -1;
 static int counter = 0;
 
+static bool blockSend = false;
+
 static void timer_callback(void *data) {
-    timer = NULL;
 
-    // Send the message
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d (%d)", left, middle, right, message, counter);
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    Tuplet value1 = TupletInteger(0, message);
-    dict_write_tuplet(iter, &value1);
-    Tuplet value2 = TupletInteger(1, counter);
-    dict_write_tuplet(iter, &value2);
-
-    app_message_outbox_send();
-    counter += 1;
-
-    //Register next execution (if stuff has changed)
     if (lastMessage != message) {
-        timer = app_timer_register(timerLong, (AppTimerCallback) timer_callback, NULL);
+        // Send the message
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending left %d middle %d right %d = %d (%d)", left, middle, right, message, counter);
+        DictionaryIterator *iter;
+        app_message_outbox_begin(&iter);
+        Tuplet value1 = TupletInteger(0, message);
+        dict_write_tuplet(iter, &value1);
+        Tuplet value2 = TupletInteger(1, counter);
+        dict_write_tuplet(iter, &value2);
+        app_message_outbox_send();
+        counter += 1;
+        blockSend = true;
         lastMessage = message;
+    } else {
+        blockSend = false;
     }
 }
 
 static void regiserTimer() {
-    if (timer == NULL) {
+    if (blockSend == false) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "regiserTimer Not blocked");
+        blockSend = true;
         timer = app_timer_register(timerShort, (AppTimerCallback) timer_callback, NULL);
+    } else {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "regiserTimer Blocked");
     }
 }
 
@@ -114,19 +118,29 @@ static void window_unload(Window *window) {
 }
 
 void out_sent_handler(DictionaryIterator *sent, void *context) {
-    // outgoing message was delivered
+    // Outgoing message was delivered.
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "out_sent_handler");
+    blockSend = false;
+    regiserTimer();
 }
 
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
-    // outgoing message failed
+    // Outgoing message failed.
+    APP_LOG(APP_LOG_LEVEL_WARNING, "out_failed_handler %d", reason);
+    blockSend = false;
+    lastMessage = -1;
+    timer_callback(NULL);
 }
 
 void in_received_handler(DictionaryIterator *received, void *context) {
     // incoming message received
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "in_received_handler");
 }
 
 void in_dropped_handler(AppMessageResult reason, void *context) {
     // incoming message dropped
+    APP_LOG(APP_LOG_LEVEL_WARNING, "in_dropped_handler %d", reason);
+    regiserTimer();
 }
 
 static void init(void) {
@@ -143,8 +157,8 @@ static void init(void) {
     app_message_register_outbox_sent(out_sent_handler);
     app_message_register_outbox_failed(out_failed_handler);
 
-    const uint32_t inbound_size = 64;
-    const uint32_t outbound_size = 64;
+    const uint32_t inbound_size = 32;
+    const uint32_t outbound_size = 32;
     app_message_open(inbound_size, outbound_size);
 }
 

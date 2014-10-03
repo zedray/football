@@ -83,7 +83,6 @@ public class StartActivity extends Activity implements View.OnTouchListener {
                 int counter = data.getInteger(KEYS.COUNTER.ordinal()).intValue();
                 Log.w(TAG, "Received value " + mState + "  (" + counter + ")");
                 PebbleKit.sendAckToPebble(context, transactionId);
-
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
