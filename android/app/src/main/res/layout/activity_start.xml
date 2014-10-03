@@ -1,33 +1,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".StartActivity">
 
-    <Button
-        android:text="@string/left"
-        android:id="@+id/left"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+        <Button
+            android:text="@string/left"
+            android:id="@+id/a_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/green"/>
+        <Button
+            android:text="@string/select"
+            android:id="@+id/a_select"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/green"/>
+        <Button
+            android:text="@string/right"
+            android:id="@+id/a_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/green"/>
+    </LinearLayout>
 
-    <Button
-        android:text="@string/select"
-        android:id="@+id/select"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
-
-    <Button
-        android:text="@string/right"
-        android:id="@+id/right"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+        <Button
+            android:text="@string/left"
+            android:id="@+id/b_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <Button
+            android:text="@string/select"
+            android:id="@+id/b_select"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <Button
+            android:text="@string/right"
+            android:id="@+id/b_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
 </LinearLayout>
